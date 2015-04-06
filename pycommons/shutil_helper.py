@@ -34,6 +34,8 @@ Only applies regex to files
 def ls(src, regex):
 	files = []
 	dirs  = []
+	if not os.path.isdir(src):
+		return files, dirs
 	entries = os.listdir(src)
 	for entry in entries:
 		path = os.path.join(src, entry)
