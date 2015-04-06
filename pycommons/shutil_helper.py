@@ -31,7 +31,7 @@ def recursive_list(src, regex):
 '''
 Only applies regex to files
 '''
-def ls(src, regex):
+def ls(src, regex_list=['*.*']):
 	files = []
 	dirs  = []
 	if not os.path.isdir(src):
@@ -39,8 +39,10 @@ def ls(src, regex):
 	entries = os.listdir(src)
 	for entry in entries:
 		path = os.path.join(src, entry)
-		if os.path.isfile(path) and fnmatch.fnmatch(entry, regex):
-			files.append(entry)
+		if os.path.isfile(path):
+			for regex in regex_list:
+				if fnmatch.fnmatch(entry, regex):
+					files.append(entry)
 		if os.path.isdir(path):
 			dirs.append(entry)
 

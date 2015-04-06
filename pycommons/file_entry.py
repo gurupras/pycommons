@@ -10,7 +10,7 @@ class FileEntry(list):
         self.name    = name
         self.parent   = parent
 
-    def build(self, regex='*.*'):
+    def build(self, regex=['*.*']):
         files, dirs = shutil_helper.ls(self.path(), regex)
         entries = list(files)
         entries.extend(dirs)
