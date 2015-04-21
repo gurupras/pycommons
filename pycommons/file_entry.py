@@ -11,6 +11,7 @@ class FileEntry(list):
         self.parent   = parent
 
     def build(self, regex=['*.*']):
+        del self[:]
         files, dirs = shutil_helper.ls(self.path(), regex)
         entries = list(files)
         entries.extend(dirs)
@@ -39,7 +40,10 @@ class FileEntry(list):
     def __str__(self):
         return self.name
     def __repr__(self):
-        return '%s -> %s' % (self.name, super(FileEntry, self).__repr__())
+        if os.path.isfile(self.path()):
+            return '%s' % (self.name)
+        else:
+            return '%s -> %s' % (self.name, super(FileEntry, self).__repr__())
 
     @staticmethod
     def prefix_tabs(name, tabs):
