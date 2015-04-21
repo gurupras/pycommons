@@ -1,5 +1,5 @@
 import os
-import fnmatch
+import fnmatch,glob
 import shutil
 import json
 
@@ -34,6 +34,8 @@ Only applies regex to files
 def ls(src, regex_list=['*.*']):
 	files = []
 	dirs  = []
+	if not isinstance(regex_list, list):
+		regex_list = [regex_list]
 	if not os.path.isdir(src):
 		return files, dirs
 	entries = os.listdir(src)
