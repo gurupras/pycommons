@@ -12,19 +12,23 @@ class FileEntry(list):
 
     def build(self, regex=['*.*']):
         del self[:]
-        files, dirs = shutil_helper.ls(self.path(), regex)
-        entries = list(files)
-        entries.extend(dirs)
-        # Append the current path since ls only returns basenames
-        entries = [os.path.join(self.path(), e) for e in entries]
-        for entry in entries:
-            basename = os.path.basename(entry)
-            dirname  = os.path.dirname(entry)
-            assert os.path.abspath(self.path()) == os.path.abspath(dirname), 'does not match:\nself   :%s\ndirname:%s' % (self.path(), dirname)
-            child = FileEntry(basename, self)
-            self.append(child)
-            if os.path.isdir(entry):
-                child.build(regex)
+        path = self.path()
+        if os.path.isdir(path):
+            files, dirs = shutil_helper.get_files(path, regex)
+            entries = list(files)
+            entries.extend(dirs)
+            # Append the current path since ls only returns basenames
+            entries = [os.path.join(path, e) for e in entries]
+            for entry in entries:
+                basename = os.path.basename(entry)
+                dirname  = os.path.dirname(entry)
+                assert os.path.abspath(path) == os.path.abspath(dirname), \
+                        'does not match:\nself   :%s\ndirname:%s' % ( \
+                        path, dirname)
+                child = FileEntry(basename, self)
+                self.append(child)
+                if os.path.isdir(entry):
+                    child.build(regex)
 
     def append(self, o):
         # FIXME: Very inefficient to sort on every append()
