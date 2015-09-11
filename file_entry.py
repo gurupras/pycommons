@@ -49,6 +49,14 @@ class FileEntry(list):
         else:
             return '%s -> %s' % (self.name, super(FileEntry, self).__repr__())
 
+    def isdir(self):
+        path = self.path()
+        return os.path.isdir(path)
+
+    def isfile(self):
+        path = self.path()
+        return os.path.isfile(path)
+
     @staticmethod
     def prefix_tabs(name, tabs):
         retval = ''
