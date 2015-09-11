@@ -14,7 +14,7 @@ class FileEntry(list):
         del self[:]
         path = self.path()
         if os.path.isdir(path):
-            files, dirs = shutil_helper.get_files(path, regex)
+            files, dirs = shutil_helper.ls(path, regex)
             entries = list(files)
             entries.extend(dirs)
             # Append the current path since ls only returns basenames
