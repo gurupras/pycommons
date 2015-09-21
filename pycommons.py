@@ -5,7 +5,7 @@ import generic_logging
 logger = logging.getLogger()
 
 def run(cmd,
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
 		log=False, fail_on_error=True):
 	logger.info('$ ' + cmd)
 	p = subprocess.Popen(cmd, shell=True, stdout=stdout, stderr=stderr)
