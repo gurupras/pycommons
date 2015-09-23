@@ -1,5 +1,6 @@
 import subprocess
 import logging
+import argparse
 
 import generic_logging
 logger = logging.getLogger()
@@ -23,4 +24,19 @@ def run(cmd,
 		if fail_on_error:
 			raise Exception('%s: %d' % (cmd, p.returncode))
 	return p.returncode, stdout, stderr
+
+class ListAction(argparse.Action):
+    def __call__(self, parser, args, values, option_string=None) :
+        range_re = re.compile('range\\((?P<start>\\d+),(?P<end>\\d+),(?P<increment>\\d+)\\)')
+        values = values.replace(' ', '')
+        m = range_re.match(values)
+        if m:
+            start = int(m.group('start'))
+            end   = int(m.group('end'))
+            incr  = int(m.group('increment'))
+            values = ['%d' % (i) for i in range(start, end, incr)]
+            values = ','.join(values)
+        values = values.split(",")
+        setattr(args, self.dest, values)
+
 
