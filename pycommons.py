@@ -1,6 +1,7 @@
 import subprocess
 import logging
 import argparse
+import re
 
 import generic_logging
 logger = logging.getLogger()
