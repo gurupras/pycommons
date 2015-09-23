@@ -13,8 +13,10 @@ def run(cmd,
 
 	stdout, stderr = p.communicate()
 	if log:
-		logger.debug(stdout)
-		logger.warning(stderr)
+		if stdout:
+			logger.debug(stdout)
+		if stderr:
+			logger.warning(stderr)
 
 	if p.returncode != 0:
 		logger.warning('Process returned: %d' % (p.returncode))
