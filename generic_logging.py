@@ -4,7 +4,15 @@ __LOGGING_FORMAT = "[%(filename)s:%(lineno)s - %(funcName)10s() ]: %(message)s"
 __FILE_FORMAT = "%(message)s"
 
 def init(level, filename=None):
+	logger = logging.getLogger()
+	logger.setLevel(level)
+	for handler in logger.handlers:
+		logger.removeHandler(handler)
 	if filename:
-		logging.basicConfig(filename=filename, filemode='w', format=__FILE_FORMAT, level=level)
-	else:
-		logging.basicConfig(format=__LOGGING_FORMAT, level=level)
+		fileh = logging.FileHandler(filename, 'w')
+		fileh.setFormatter(logging.Formatter(__FILE_FORMAT))
+		logger.addHandler(fileh)
+	# Add console handler
+	consoleh = logging.StreamHandler()
+	consoleh.setFormatter(logging.Formatter(__LOGGING_FORMAT))
+	logger.addHandler(consoleh)
