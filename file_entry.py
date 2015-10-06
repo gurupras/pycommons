@@ -41,11 +41,11 @@ class FileEntry(list):
         else:
             return self.name
 
-	def root(self):
-		if self.parent is None:
-			return self
-		else:
-			return self.parent.root()
+    def root(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.root()
 
     def __str__(self):
         return self.name
