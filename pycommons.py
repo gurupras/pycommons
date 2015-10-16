@@ -11,20 +11,35 @@ def run(cmd,
 		log=False, fail_on_error=True):
 	logger.info('$ ' + cmd)
 	p = subprocess.Popen(cmd, shell=True, stdout=stdout, stderr=stderr)
-	p.wait()
 
-	stdout, stderr = p.communicate()
+	stdout = []
+	stderr = []
 	if log:
-		if stdout:
-			logger.debug(stdout)
-		if stderr:
-			logger.warning(stderr)
+		while True:
+			nextline = p.stdout.readline().strip()
+			if nextline == '' and p.poll() != None:
+				break
+			logger.info(nextline)
+			stdout.append(nextline)
+			try:
+				nextline = p.stderr.readline().strip()
+				if nextline == '' and p.poll() != None:
+					break
+				logger.error(nextline)
+				stderr.append(nextline)
+			except:
+				pass
 
+	p.wait()
+	if not log:
+		stdout.append('\n'.join(p.stdout.readlines()))
+		if p.stderr:
+			stderr.append('\n'.join(p.stderr.readlines()))
 	if p.returncode != 0:
 		logger.warning('Process returned: %d' % (p.returncode))
 		if fail_on_error:
 			raise Exception('%s: %d' % (cmd, p.returncode))
-	return p.returncode, stdout, stderr
+	return p.returncode, '\n'.join(stdout), '\n'.join(stderr)
 
 class ListAction(argparse.Action):
 	def __call__(self, parser, args, values, option_string=None) :
