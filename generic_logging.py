@@ -3,7 +3,12 @@ import logging
 __LOGGING_FORMAT = "[%(filename)s:%(lineno)s - %(funcName)10s() ]: %(message)s"
 __FILE_FORMAT = "%(message)s"
 
+__INITIALIZED = False
+
 def init(level, filename=None, format=None):
+	global __INITIALIZED
+	if __INITIALIZED:
+		return
 	logger = logging.getLogger()
 	logger.setLevel(level)
 	for handler in logger.handlers:
@@ -25,3 +30,4 @@ def init(level, filename=None, format=None):
 	consoleh = logging.StreamHandler()
 	consoleh.setFormatter(logging.Formatter(fmt))
 	logger.addHandler(consoleh)
+	__INITIALIZED = True
