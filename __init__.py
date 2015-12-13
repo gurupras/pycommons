@@ -48,3 +48,24 @@ class ListAction(argparse.Action):
 		m = range_re.match(values)
 		if m:
 			start = int(m.group('start'))
+			end   = int(m.group('end'))
+			incr  = int(m.group('increment'))
+			values = ['%d' % (i) for i in range(start, end, incr)]
+			values = ','.join(values)
+		values = values.split(",")
+		setattr(args, self.dest, values)
+
+class LoggingLevelAction(argparse.Action):
+	def __call__(self, parser, args, values, option_string=None) :
+		try:
+			level = getattr(logging, values)
+		except:
+			level = logging.DEBUG
+		setattr(args, self.dest, level)
+
+
+# Taken from http://stackoverflow.com/a/613218/1761555
+def sort_dict(d, pos=0):
+	import operator
+	sorted_tuples = sorted(d.items(), key=operator.itemgetter(pos))
+	return sorted_tuples
