@@ -65,7 +65,12 @@ class LoggingLevelAction(argparse.Action):
 
 
 # Taken from http://stackoverflow.com/a/613218/1761555
-def sort_dict(d, pos=0):
+def sort_dict(d, pos=0, key=None):
 	import operator
-	sorted_tuples = sorted(d.items(), key=operator.itemgetter(pos))
+	lambdafn = None
+	if not key:
+		lambdafn = operator.itemgetter(pos)
+	else:
+		lambdafn = lambda x: key(x[pos])
+	sorted_tuples = sorted(d.items(), key=lambdafn)
 	return sorted_tuples
