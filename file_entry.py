@@ -47,6 +47,15 @@ class FileEntry(list):
 		else:
 			return self.parent.root()
 
+	def get_files(self):
+		files = []
+		for f in self:
+			if f.isfile():
+				files.append(f)
+			else:
+				files.extend(f.get_files())
+		return files
+
 	def __str__(self):
 		return self.name
 	def __repr__(self):
