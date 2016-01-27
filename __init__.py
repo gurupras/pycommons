@@ -55,6 +55,25 @@ class ListAction(argparse.Action):
 		values = values.split(",")
 		setattr(args, self.dest, values)
 
+class SizeAction(argparse.Action):
+	SIZE_DICT = {
+		'b' : 1,
+		'k' : 1024,
+		'm' : 1024*1024,
+		'g' : 1024*1024*1024,
+	}
+
+	def __call__(self, parser, args, values, option_string=None) :
+		pattern = re.compile(r'(?P<size>\d+)(?P<unit>[bBkKmMgG])')
+		m = pattern.match(values)
+		if not m:
+			raise Exception("'%s' does not satisfy pattern '%s'" % (values, pattern.pattern))
+		size = int(m.group('size'))
+		for k, v in SizeAction.SIZE_DICT.iteritems():
+			if m.group('unit').lower() == k:
+				size *= v
+		setattr(args, self.dest, size)
+
 class LoggingLevelAction(argparse.Action):
 	def __call__(self, parser, args, values, option_string=None) :
 		try:
