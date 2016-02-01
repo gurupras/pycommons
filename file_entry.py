@@ -64,6 +64,24 @@ class FileEntry(list):
 		else:
 			return '%s -> %s' % (self.name, super(FileEntry, self).__repr__())
 
+	def json(self):
+		if self.isfile():
+			return {
+				'name' : self.name,
+				'path' : self.path(),
+				'type' : 'file',
+			}
+		else:
+			d = []
+			for entry in self:
+				d.append(entry.json())
+			return {
+				'name' : self.name,
+				'type' : 'directory',
+				'path' : self.path(),
+				'children' : d
+			}
+
 	def isdir(self):
 		path = self.path()
 		return os.path.isdir(path)
