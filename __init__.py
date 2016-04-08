@@ -3,8 +3,15 @@ import logging
 import argparse
 import re
 
+import gzip
+
 import generic_logging
 logger = logging.getLogger()
+
+def open_file(fpath, mode):
+	if '.gz' in fpath:
+		return gzip.open(fpath, mode)
+	return open(fpath, mode)
 
 def run(cmd,
 		stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
