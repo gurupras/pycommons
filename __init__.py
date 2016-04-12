@@ -1,3 +1,4 @@
+import sys
 import subprocess
 import logging
 import argparse
@@ -100,3 +101,22 @@ def sort_dict(d, pos=0, key=None):
 		lambdafn = lambda x: key(x[pos])
 	sorted_tuples = sorted(d.items(), key=lambdafn)
 	return sorted_tuples
+
+# Taken from http://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
+def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, barLength = 100):
+	"""
+	Call in a loop to create terminal progress bar
+	@params:
+		iterations  - Required  : current iteration (Int)
+		total       - Required  : total iterations (Int)
+		prefix      - Optional  : prefix string (Str)
+		suffix      - Optional  : suffix string (Str)
+	"""
+	filledLength    = int(round(barLength * iterations / float(total)))
+	percents        = round(100.00 * (iterations / float(total)), decimals)
+	bar             = '#' * filledLength + '-' * (barLength - filledLength)
+	sys.stderr.write('%s [%s] %s%s %s\r' % (prefix, bar, percents, '%', suffix)),
+	sys.stderr.flush()
+	if iterations == total:
+		print("\n")
+
