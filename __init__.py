@@ -1,3 +1,4 @@
+import os
 import sys
 import subprocess
 import logging
@@ -9,8 +10,17 @@ import gzip
 import generic_logging
 logger = logging.getLogger()
 
-def open_file(fpath, mode):
-	if '.gz' in fpath:
+def f_to_c(f):
+	celsius = (f - 32) * (5/9.)
+	return celsius
+
+def c_to_f(c):
+	fahrenheit = ((c * (9/5.)) + 32)
+	return fahrenheit
+
+def open_file(fpath, mode, gz=False):
+	name, ext = os.path.splitext(fpath)
+	if ext == '.gz' or gz is True:
 		return gzip.open(fpath, mode)
 	return open(fpath, mode)
 
@@ -103,7 +113,7 @@ def sort_dict(d, pos=0, key=None):
 	return sorted_tuples
 
 # Taken from http://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, barLength = 100):
+def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, barLength = 100, colors=False):
 	"""
 	Call in a loop to create terminal progress bar
 	@params:
@@ -111,12 +121,31 @@ def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, ba
 		total       - Required  : total iterations (Int)
 		prefix      - Optional  : prefix string (Str)
 		suffix      - Optional  : suffix string (Str)
+		decimals    - Optional  : Number of decimal places to display
+		barLength   - Optional  : Number of characters that encompass bar length
+		colors      - Optional  : Specifies whether to use ANSI terminal colors
 	"""
+	COLOR_RED = '\033[31m'
+	COLOR_GREEN = '\033[32m'
+	COLOR_YELLOW = '\033[33m'
+	COLOR_ENDC = '\033[0m'
 	filledLength    = int(round(barLength * iterations / float(total)))
 	percents        = round(100.00 * (iterations / float(total)), decimals)
 	bar             = '#' * filledLength + '-' * (barLength - filledLength)
-	sys.stderr.write('%s [%s] %s%s %s\r' % (prefix, bar, percents, '%', suffix)),
+
+	color = ''
+	if colors:
+		if percents < 30:
+			color = COLOR_RED
+		elif percents < 70:
+			color = COLOR_YELLOW
+		else:
+			color = COLOR_GREEN
+	string = '%s%s [%s] %s%s %s\r' % (color, prefix, bar, percents, '%', suffix)
+	sys.stderr.write(string)
+	sys.stderr.write(COLOR_ENDC)
 	sys.stderr.flush()
 	if iterations == total:
-		print("\n")
+		sys.stderr.write("\n")
+		sys.stderr.flush()
 
