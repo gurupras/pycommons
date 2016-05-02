@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 import subprocess
 import logging
 import argparse
@@ -71,6 +72,31 @@ class ListAction(argparse.Action):
 			values = ['%d' % (i) for i in range(start, end, incr)]
 			values = ','.join(values)
 		values = values.split(",")
+		setattr(args, self.dest, values)
+
+class DateRangeAction(argparse.Action):
+	def __call__(self, parser, args, values, option_string=None) :
+		patterns = [
+			re.compile('(?P<start>\d{2}/\d{2}/\d{4})\s*(-)?\s*(?P<end>\d{2}/\d{2}/\d{4})'),
+			re.compile('(?P<start>\d{8})\s*(-)?\s*(?P<end>\d{8})')
+		]
+		dt_patterns = [
+			'%m/%d/%Y',
+			'%Y%m%d'
+		]
+		values = values.replace(' ', '')
+		for idx, p in enumerate(patterns):
+			m = p.match(values)
+			if m:
+				start = datetime.datetime.strptime(m.group('start'), dt_patterns[idx])
+				end = datetime.datetime.strptime(m.group('end'), dt_patterns[idx])
+				days = (end - start).days
+				assert days >= 0, 'End date cannot be before start date!'
+
+				values = []
+				for d in range(days):
+					values.append(start + datetime.timedelta(days=d))
+				break
 		setattr(args, self.dest, values)
 
 class SizeAction(argparse.Action):
