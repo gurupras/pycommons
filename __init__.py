@@ -139,7 +139,7 @@ def sort_dict(d, pos=0, key=None):
 	return sorted_tuples
 
 # Taken from http://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, barLength = 100, colors=False):
+def print_progress(iterations, total, prefix = '', suffix = '', decimals = 2, barLength = 80, colors=False):
 	"""
 	Call in a loop to create terminal progress bar
 	@params:
