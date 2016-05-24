@@ -11,6 +11,8 @@ import gzip
 import generic_logging
 logger = logging.getLogger()
 
+import pool
+
 def f_to_c(f):
 	celsius = (f - 32) * (5/9.)
 	return celsius
