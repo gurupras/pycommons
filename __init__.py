@@ -9,7 +9,7 @@ import re
 import gzip
 
 import generic_logging
-logger = logging.getLogger()
+logger = logging.getLogger('pycommons')
 
 import pool
 
