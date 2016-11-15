@@ -53,11 +53,11 @@ def run(cmd,
 
 	p.wait()
 	if not log:
-		stdout.append('\n'.join(p.stdout.readlines()))
+		stdout.append(''.join(p.stdout.readlines()))
 		if p.stderr:
-			stderr.append('\n'.join(p.stderr.readlines()))
+			stderr.append(''.join(p.stderr.readlines()))
 	if p.returncode != 0:
-		logger.warning('Process returned: %d' % (p.returncode))
+		logger.debug('Process returned: %d' % (p.returncode))
 		if fail_on_error:
 			raise Exception('%s: %d' % (cmd, p.returncode))
 	return p.returncode, '\n'.join(stdout), '\n'.join(stderr)
