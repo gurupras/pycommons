@@ -16,14 +16,17 @@ def recursive_copy(base_dir, src, dest):
 	os.chdir(cwd)
 
 def recursive_list(src, regex):
+	if isinstance(regex, str):
+		regex = [regex]
 	files = []
 	for root, dirnames, filenames in os.walk(src):
-		for filename in fnmatch.filter(filenames, regex):
-			files.append(os.path.abspath(os.path.join(root, filename)))
-		for dirname in dirnames:
-			path = os.path.join(root, dirname)
-			for entry in recursive_list(path, regex):
-				files.append(entry)
+		for regx in regex:
+			for filename in fnmatch.filter(filenames, regx):
+				files.append(os.path.abspath(os.path.join(root, filename)))
+			for dirname in dirnames:
+				path = os.path.join(root, dirname)
+				for entry in recursive_list(path, regex):
+					files.append(entry)
 	files = list(set(files))
 	files.sort()
 	return files
