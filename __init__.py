@@ -5,6 +5,9 @@ import subprocess
 import logging
 import argparse
 import re
+import json
+import collections
+import math
 
 import gzip
 
@@ -21,11 +24,49 @@ def c_to_f(c):
 	fahrenheit = ((c * (9/5.)) + 32)
 	return fahrenheit
 
+def bin(groups, val):
+	i = 1
+
+	if val > groups[-1]:
+		return groups[-1]
+	elif val <= groups[0]:
+		return groups[0]
+
+	while True:
+		if i == len(groups):
+			return groups[-1]
+		if val > groups[i-1] and val <= groups[i]:
+			return groups[i]
+		i += 1
+
+def percentile_from_counter(counter, percentile, keys=None):
+	if not isinstance(counter, collections.Counter) and not isinstance(counter, dict):
+		raise ValueError('Expects collections.Counter or dict as first argument')
+	if keys is None:
+		keys = sorted(counter.keys())
+	total_values = sum(counter.values())
+	expected_count = int(math.ceil(percentile * total_values)/ 100.0)
+	count = 0
+	for k in keys:
+		count += counter[k]
+		if count >= expected_count:
+			return k
+	return counter[k]
+
+
+
 def open_file(fpath, mode, gz=False):
 	name, ext = os.path.splitext(fpath)
 	if ext == '.gz' or gz is True:
-		return gzip.open(fpath, mode)
+		try:
+			return gzip.open(fpath, mode)
+		except:
+			pass
 	return open(fpath, mode)
+
+def load_json(fpath, gz=False):
+	with open_file(fpath, 'rb', gz) as f:
+		return json.loads(f.read())
 
 def run(cmd,
 		stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

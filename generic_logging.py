@@ -1,13 +1,12 @@
 import logging
 
-_LOGGING_FORMAT = "[%(threadName)-10s  %(filename)s:%(lineno)s - %(funcName)-10s() ]: %(message)s"
+_LOGGING_FORMAT = "[%(threadName)-10s  %(filename)s:%(lineno)s - %(funcName)-10s() [%(asctime)-16s]]: %(message)s"
 _FILE_FORMAT = "[%(asctime)-16s]: %(message)s"
 
 __INITIALIZED = False
 
 class LoggingFormatter(logging.Formatter):
-	fmt = "[%(threadName)-10s  %(filename)s:%(lineno)s - " + \
-						"%(funcName)-10s() ]: %(message)s"
+	fmt = _LOGGING_FORMAT
 
 	def __init__(self, fmt=None, datefmt=None):
 		if not fmt:
@@ -52,8 +51,8 @@ def init(level, filename=None, format=None):
 
 	logger = logging.getLogger()
 	logger.setLevel(level)
-	for handler in logger.handlers:
-		logger.removeHandler(handler)
+#	for handler in logger.handlers:
+#		logger.removeHandler(handler)
 
 	# If format is set, use it for all streams
 	fmt = None
